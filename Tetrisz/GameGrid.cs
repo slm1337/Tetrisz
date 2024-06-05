@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Security.Policy;
-
-namespace Tetrisz
+﻿namespace Tetrisz
 {
     public class GameGrid
     {
@@ -15,16 +12,84 @@ namespace Tetrisz
             set => grid[r, c] = value;
         }
 
-        public GameGrid(int rows, int colums) {
+        public GameGrid(int rows, int colums)
+        {
             Rows = rows;
             Columns = colums;
             grid = new int[Rows, Columns];
         }
 
-        public bool IsInSIDE(int r, int c) { 
+        public bool IsInside(int r, int c)
+        {
             return r >= 0 && r < Rows && c >= 0 && c < Columns;
         }
 
-        public
+        public bool IsEmpty(int r, int c)
+        {
+            return IsInside(r, c) && grid[r, c] == 0;
+        }
+
+        public bool IsRowFull(int r)
+        {
+            for (int c = 0; c < Columns; c++)
+            {
+                if (grid[r, c] == 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool IsRowEmpty(int r)
+        {
+            for (int c = 0; c < Columns; c++)
+            {
+                if (grid[r, c] != 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void ClearRow(int r)
+        {
+            for (int c = 0; c < Columns; c++)
+            {
+                grid[r, c] = 0;
+            }
+        }
+
+        private void MoveRowDown(int r, int numRows)
+        {
+            for (int c = 0; c < Columns; c++)
+            {
+                grid[r + numRows, c] = grid[r, c];
+                grid[r, c] = 0;
+            }
+        }
+
+        public int ClearFullRows()
+        {
+            int cleared = 0;
+
+            for (int r = Rows - 1; r >= 0; r--)
+            {
+                if (IsRowFull(r))
+                {
+                    ClearRow(r);
+                    cleared++;
+                }
+                else if (cleared > 0)
+                {
+                    MoveRowDown(r, cleared);
+                }
+            }
+
+            return cleared;
+        }
     }
 }
