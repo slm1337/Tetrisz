@@ -106,6 +106,8 @@ namespace Tetrisz
 
         public void MoveBlockDown()
         {
+            CurrentBlock.Move(1, 0);
+
             if (!BlockFits())
             {
                 CurrentBlock.Move(-1, 0);
